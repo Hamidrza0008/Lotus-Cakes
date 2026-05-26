@@ -106,24 +106,17 @@ const Orders = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFBFD] p-4 md:p-8 pt-28 text-[#33081B]">
+    <div className="min-h-screen bg-[#FFFBFD] p-4 md:p-8 mt-10 pt-28 text-[#33081B]">
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-pink-100/60 shadow-sm">
-          <div>
-            <span className="text-pink-500 text-[10px] font-black tracking-[0.3em] uppercase block mb-1">
-              Management Console
-            </span>
-            <h1 className="text-3xl font-black text-[#5D1232] tracking-tight">
-              Bakery Orders
-            </h1>
-          </div>
+        <div className="flex flex-col sm:flex-row justify-center items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-pink-100/60 shadow-sm">
+          
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="flex flex-wrap gap-2 sm:gap-3 flex-1 sm:flex-none">
               <div className="flex flex-wrap gap-3">
-                {["Pending", "Packed", "Out for Delivery", "Success" , "Cancel"].map((status) => (
+                {["Pending", "Packed", "Out for Delivery", "Success", "Cancel"].map((status) => (
                   <button
                     key={status}
                     onClick={() => setSelectedFilter(status)}
@@ -217,8 +210,10 @@ const Orders = () => {
                         Total Items
                       </span>
                       <p className="text-lg font-black text-[#5D1232]">
-                        {order.order_items?.length || 0} {order.order_items?.length === 1 ? 'Cake' : 'Cakes'}
-                      </p>
+                        {(typeof order.order_items === "string"
+                          ? JSON.parse(order.order_items)
+                          : order.order_items
+                        )?.length || 0}                      </p>
                     </div>
                   </div>
 
@@ -231,7 +226,10 @@ const Orders = () => {
 
                     {/* Dynamic wrapper without fixed height restriction */}
                     <div className="space-y-2.5 max-h-[180px] overflow-y-auto pr-1 custom-scrollbar">
-                      {order.order_items?.map((item, index) => (
+                      {(typeof order.order_items === "string"
+                        ? JSON.parse(order.order_items)
+                        : order.order_items
+                      )?.map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-between bg-white p-2.5 rounded-2xl border border-pink-50 hover:border-pink-100 transition-colors"

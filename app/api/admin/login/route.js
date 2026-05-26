@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 export async function POST(req) {
     try {
+        // console.log("DB HOST:", process.env.DB_HOST);
         const body = await req.json();
         const { email, password } = body;
 
@@ -42,7 +43,8 @@ export async function POST(req) {
             )
         }
 
-        const isMatched = await bcrypt.compare(password, admin.password);
+        const isMatched = await bcrypt.compare(password , admin.password);
+        console.log(isMatched);
 
         if (!isMatched) {
             return NextResponse.json(
