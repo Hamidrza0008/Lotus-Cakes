@@ -8,7 +8,7 @@ export default function AdminLayout({ children }) {
             <div className="flex-1 flex flex-col">
 
                 {/* Navbar */}
-                <Navbar />
+                <AdminNavbar />
 
                 {/* Main Content */}
                 <main className="flex-1 p-6 overflow-y-auto">
