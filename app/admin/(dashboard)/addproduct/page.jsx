@@ -1,10 +1,10 @@
-import AddProduct from "@/Components/admin/AddProduct"
+import AddProduct from "@/Components/admin/AddProduct";
 
-const addproduct = () => {
+const addproductpage = () => {
     return(
         <>
         <AddProduct/>
         </>
     )
 }
-export default addproduct;
+export default addproductpage;
