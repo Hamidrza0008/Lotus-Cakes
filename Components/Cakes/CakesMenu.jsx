@@ -23,6 +23,7 @@ const CakesMenu = () => {
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setProductData(data);
+        console.log(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
