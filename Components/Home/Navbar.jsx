@@ -6,19 +6,21 @@ import {
   Search,
   History,
   User,
-  LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const router = useRouter();
+  const pathname = usePathname();
+  
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState(null);
-  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   const getCurrentUser = async () => {
     try {
@@ -26,25 +28,12 @@ const Navbar = () => {
       const data = await res.json();
       if (data.success) {
         setUser(data.user);
-        console.log(data.user);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      const res = await fetch("/api/auth/logout");
-      const data = await res.json();
-
-      if (data.success) {
-        setUser(null);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const cartCount = useSelector(
     (state) => state?.cart?.cartItems?.length || 0
   );
@@ -60,6 +49,10 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Menu", href: "/menupage" },
@@ -69,18 +62,18 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-500 px-2 sm:px-4 md:px-10 ${
+        className={`fixed top-0 w-full z-50 transition-all duration-500 px-3 sm:px-4 md:px-10 ${
           scrolled ? "py-2 sm:py-3" : "py-4 sm:py-6"
         }`}
       >
         <div
-          className={`max-w-6xl mx-auto flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 transition-all duration-500 ${
-            scrolled
+          className={`max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3 transition-all duration-500 relative ${
+            scrolled || isOpen
               ? "bg-white/85 backdrop-blur-md shadow-[0_10px_30px_-5px_rgba(93,18,50,0.1)] rounded-[20px] sm:rounded-[24px] border border-white/40"
               : "bg-transparent"
           }`}
         >
-          {/* LOGO */}
+          {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
             <div className="relative">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-tr from-[#5D1232] to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center text-white font-serif text-lg sm:text-xl shadow-md group-hover:rotate-[10deg] transition-transform duration-500">
@@ -88,16 +81,15 @@ const Navbar = () => {
               </div>
               <div className="absolute -inset-1 bg-pink-400/20 blur-lg rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
-            <span className="font-serif text-xl sm:text-2xl font-black tracking-tighter text-[#5D1232]">
+            <span className="font-serif text-xl font-black tracking-tighter text-[#5D1232]">
               LOTUS
             </span>
           </Link>
 
-          {/* NAV LINKS (Desktop) */}
+          {/* Desktop Links */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
-
               return (
                 <Link
                   key={link.name}
@@ -117,60 +109,46 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* ACTION BUTTONS */}
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
-            
-            {/* Search Button with Text */}
+          {/* Desktop Actions Area */}
+          <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => router.push("/search")}
-              className={`flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all duration-300 ${
-                pathname === "/search"
-                  ? "bg-pink-100 text-[#5D1232] font-semibold"
-                  : "text-pink-600 hover:text-[#5D1232] hover:bg-pink-50"
+              className={`flex items-center gap-1.5 p-2 rounded-xl transition-all duration-300 ${
+                pathname === "/search" ? "bg-pink-100 text-[#5D1232]" : "text-pink-600 hover:text-[#5D1232] hover:bg-pink-50"
               }`}
-              title="Search"
             >
-              <Search size={18} strokeWidth={2.5} className="shrink-0" />
-              <span className="text-xs font-bold uppercase tracking-wider hidden lg:inline">Search</span>
+              <Search size={18} strokeWidth={2.5} />
             </button>
 
-            {/* Orders Button with Text */}
             <Link
               href="/orderspage"
-              className={`flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all duration-300 ${
-                pathname === "/orderspage"
-                  ? "bg-pink-100 text-[#5D1232] font-semibold"
-                  : "text-pink-600 hover:text-[#5D1232] hover:bg-pink-50"
+              className={`flex items-center gap-1.5 p-2 rounded-xl transition-all duration-300 ${
+                pathname === "/orderspage" ? "bg-pink-100 text-[#5D1232]" : "text-pink-600 hover:text-[#5D1232] hover:bg-pink-50"
               }`}
-              title="My Orders"
             >
-              <History size={18} strokeWidth={2.5} className="shrink-0" />
-              <span className="text-xs font-bold uppercase tracking-wider hidden lg:inline">Orders</span>
+              <History size={18} strokeWidth={2.5} />
             </Link>
 
-            {/* Profile / Login Button */}
             <button
               onClick={() => router.push(user ? "/profile" : "/login")}
-              className={`flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl transition-all duration-300 ${
-                pathname === "/profile" || pathname === "/login"
-                  ? "bg-pink-100 text-[#5D1232] font-semibold"
-                  : "text-pink-600 hover:text-[#5D1232] hover:bg-pink-50"
+              className={`flex items-center gap-1.5 p-2 rounded-xl transition-all duration-300 ${
+                pathname === "/profile" || pathname === "/login" ? "bg-pink-100 text-[#5D1232]" : "text-pink-600 hover:text-[#5D1232] hover:bg-pink-50"
               }`}
-              title={user ? "Profile" : "Login"}
             >
-              <User size={18} strokeWidth={2.5} className="shrink-0" />
-              <span className="text-xs font-bold uppercase tracking-wider hidden lg:inline">
-                {user ? "Profile" : "Login"}
-              </span>
+              <User size={18} strokeWidth={2.5} />
             </button>
+          </div>
 
-            {/* Cart / Tray Button */}
+          {/* Right Side Controls (Mobile + Desktop Combined Container) */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            
+            {/* Cart Tray - Always Visible */}
             <Link
               href="/cartpage"
-              className={`group relative flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all duration-300 ${
+              className={`group relative flex items-center gap-1.5 px-3 py-2 rounded-xl sm:rounded-2xl transition-all duration-300 ${
                 pathname === "/cartpage"
                   ? "bg-pink-600 scale-[1.02] shadow-lg shadow-pink-500/30"
-                  : "bg-[#5D1232] hover:bg-[#4a0e28] hover:shadow-md"
+                  : "bg-[#5D1232] hover:bg-[#4a0e28]"
               }`}
             >
               <ShoppingBag size={17} className={pathname === "/cartpage" ? "text-white" : "text-pink-300"} />
@@ -185,7 +163,60 @@ const Navbar = () => {
               )}
             </Link>
 
+            {/* Mobile Hamburger Toggle */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 text-pink-600 hover:text-[#5D1232] md:hidden rounded-xl hover:bg-pink-50 transition-all shrink-0"
+            >
+              {isOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
+            </button>
+
           </div>
+
+          {/* Mobile Dropdown Panel */}
+          {isOpen && (
+            <div className="absolute top-full left-0 w-full mt-2 bg-white/95 backdrop-blur-md rounded-[20px] shadow-xl border border-white/50 py-4 px-6 flex flex-col gap-1 md:hidden animate-slide-down">
+              
+              {/* Primary Navigation Links */}
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`text-xs font-bold uppercase tracking-[0.15em] py-3 border-b border-pink-50/50 transition-colors ${
+                      isActive ? "text-[#5D1232]" : "text-pink-600/80"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+
+              {/* Utility Actions Inside Mobile Dropdown */}
+              <button
+                onClick={() => router.push("/search")}
+                className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.15em] py-3 text-pink-600/80 border-b border-pink-50/50 text-left w-full"
+              >
+                <Search size={16} strokeWidth={2.5} /> Search
+              </button>
+
+              <button
+                onClick={() => router.push("/orderspage")}
+                className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.15em] py-3 text-pink-600/80 border-b border-pink-50/50 text-left w-full"
+              >
+                <History size={16} strokeWidth={2.5} /> Orders
+              </button>
+
+              <button
+                onClick={() => router.push(user ? "/profile" : "/login")}
+                className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.15em] py-3 text-pink-600/80 text-left w-full"
+              >
+                <User size={16} strokeWidth={2.5} /> {user ? "Profile" : "Login"}
+              </button>
+
+            </div>
+          )}
         </div>
       </nav>
 
@@ -194,8 +225,15 @@ const Navbar = () => {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-2px); }
         }
+        @keyframes slide-down {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         .animate-bounce-short {
           animation: bounce-short 2s ease-in-out infinite;
+        }
+        .animate-slide-down {
+          animation: slide-down 0.3s ease-out forwards;
         }
       `}</style>
     </>
