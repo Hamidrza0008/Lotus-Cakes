@@ -14,7 +14,6 @@ export async function POST(req) {
 
         const hash = await bcrypt.hash("admin0008", 10);
 console.log(hash);
-        // console.log("DB HOST:", process.env.DB_HOST);
         const body = await req.json();
         const { email, password } = body;
 
@@ -52,8 +51,10 @@ console.log(hash);
             )
         }
 
-        console.log(password);
-        console.log(admin.password);
+        // console.log(password);
+        // console.log(admin.password);
+        // const pwd = await bcrypt.hash("admin123" , 10);
+        // console.log(pwd)
         const isMatched = await bcrypt.compare(password , admin.password);
         console.log(isMatched);
 

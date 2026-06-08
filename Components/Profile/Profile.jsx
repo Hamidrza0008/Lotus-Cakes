@@ -246,7 +246,7 @@ const ProfileComponent = () => {
             recentOrders.slice(0, 3).map((order, idx) => {
               const displayStatus = order.order_status;
               const displayPrice = order.total_price;
-              const displayItem =JSON.parse(order.order_items)[0]?.name + " & more...";
+              const displayItem =order.order_items[0]?.name + " & more...";
 
               return (
                 <motion.div
