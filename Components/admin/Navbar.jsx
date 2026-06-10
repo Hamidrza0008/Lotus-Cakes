@@ -21,10 +21,10 @@ const AdminNavbar = () => {
 
   const handleLoggedout = async () => {
     try {
-      console.log("logout")
+      console.log("logout");
       const res = await fetch("/api/admin/logout", {
-        method: "POST"
-      })
+        method: "POST",
+      });
 
       const data = await res.json();
 
@@ -32,25 +32,50 @@ const AdminNavbar = () => {
         window.location.href = "/admin/login";
       }
     } catch (error) {
-
+      console.error("Logout error:", error);
     }
-
-  }
+  };
 
   const navLinks = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Orders", path: "/admin/orderspage", icon: ShoppingBag },
-    { name: "Inventory", path: "/admin/inventory", icon: Package }, // Fixed spelling path from inventery to inventory
+    { name: "Inventory", path: "/admin/inventory", icon: Package },
     { name: "Sales", path: "/admin/salespage", icon: BarChart3 },
     { name: "Customers", path: "/admin/customers", icon: Users },
   ];
+
+  // Animation variants for the mobile menu container
+  const menuVariants = {
+    hidden: { opacity: 0, y: -12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.25,
+        ease: "easeOut",
+        staggerChildren: 0.04,
+        when: "beforeChildren",
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: -8,
+      transition: { duration: 0.15, ease: "easeIn" },
+    },
+  };
+
+  // Animation variants for individual links inside the mobile menu
+  const itemVariants = {
+    hidden: { opacity: 0, x: -8 },
+    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 120 } },
+  };
 
   return (
     <>
       {/* Top Glassmorphic Navigation Bar */}
       <nav className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md border-b border-pink-100/60 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3.5 flex items-center justify-between">
-
+          
           {/* Brand Logo Wrapper */}
           <div
             onClick={() => {
@@ -82,10 +107,11 @@ const AdminNavbar = () => {
                 <button
                   key={link.name}
                   onClick={() => router.push(link.path)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all relative ${isActive
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all relative ${
+                    isActive
                       ? "bg-pink-50 text-[#5D1232]"
                       : "text-gray-600 hover:bg-pink-50/40 hover:text-[#5D1232]"
-                    }`}
+                  }`}
                 >
                   <Icon size={14} className={isActive ? "text-[#5D1232]" : "text-pink-400"} />
                   <span>{link.name}</span>
@@ -101,9 +127,11 @@ const AdminNavbar = () => {
             })}
 
             <div className="w-px h-5 bg-pink-100 mx-2" />
-            
 
-            <button onClick={handleLoggedout} className="flex items-center gap-2 px-4 py-2 bg-[#5D1232] hover:bg-[#420B22] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md shadow-maroon-900/10 active:scale-95">
+            <button
+              onClick={handleLoggedout}
+              className="flex items-center gap-2 px-4 py-2 bg-[#5D1232] hover:bg-[#420B22] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md shadow-maroon-900/10 active:scale-95"
+            >
               <LogOut size={14} />
               <span>Logout</span>
             </button>
@@ -111,53 +139,61 @@ const AdminNavbar = () => {
 
           {/* Mobile Utility Menu Button */}
           <button
-            className="lg:hidden p-2 text-[#5D1232] bg-pink-50/60 border border-pink-100 rounded-xl transition-all active:scale-90"
+            className="lg:hidden p-2 text-[#5D1232] bg-pink-50/60 border border-pink-100/70 rounded-xl transition-all active:scale-90"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle Menu"
           >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
+            {isOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </nav>
 
-      {/* Floating Mobile Drawer Menu */}
+      {/* Premium Dropdown Menu for Mobile Screens */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-[65px] left-0 w-full bg-white border-b border-pink-100 shadow-xl z-40 lg:hidden flex flex-col p-4 space-y-2"
+            variants={menuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="fixed top-[69px] left-4 right-4 bg-white/95 backdrop-blur-md border border-pink-100/80 shadow-xl shadow-maroon-950/5 z-40 lg:hidden flex flex-col p-2.5 rounded-2xl gap-1"
           >
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.path;
 
               return (
-                <button
+                <motion.button
                   key={link.name}
+                  variants={itemVariants}
+                  whileTap={{ scale: 0.99 }}
                   onClick={() => {
                     router.push(link.path);
                     setIsOpen(false);
                   }}
-                  className={`flex items-center gap-3 w-full p-3 rounded-xl text-sm font-black uppercase tracking-wider text-left transition-all ${isActive
-                      ? "bg-pink-50 text-[#5D1232] border-l-4 border-[#5D1232]"
-                      : "text-gray-600 hover:bg-pink-50/30"
-                    }`}
+                  className={`flex items-center gap-3 w-full px-3.5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider text-left transition-all ${
+                    isActive
+                      ? "bg-pink-50 text-[#5D1232]"
+                      : "text-gray-500 hover:bg-pink-50/30 hover:text-[#5D1232]"
+                  }`}
                 >
-                  <Icon size={16} className={isActive ? "text-[#5D1232]" : "text-pink-400"} />
+                  <Icon size={14} className={isActive ? "text-[#5D1232]" : "text-pink-400"} />
                   <span>{link.name}</span>
-                </button>
+                </motion.button>
               );
             })}
 
-            <div className="h-px bg-pink-100 my-2" />
+            <div className="h-px bg-pink-100/60 my-1.5 mx-2" />
 
-            <button onClick={handleLoggedout} className="flex items-center justify-center gap-2 w-full p-3 bg-[#5D1232] hover:bg-[#420B22] text-white text-sm font-black uppercase tracking-wider rounded-xl transition-all shadow-md">
-              <LogOut size={16} />
+            <motion.button
+              variants={itemVariants}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleLoggedout}
+              className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#5D1232] hover:bg-[#420B22] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md shadow-maroon-900/10"
+            >
+              <LogOut size={14} />
               <span>Logout</span>
-            </button>
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>

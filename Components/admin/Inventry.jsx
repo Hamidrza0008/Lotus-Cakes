@@ -4,18 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
     Star,
-    Cake,
-    IceCream,
-    Coffee,
-    Croissant,
-    Package,
     Plus,
-    Edit3,
     Layers,
     Sparkles,
-    Link,
-    Delete,
-    DeleteIcon
+    Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -54,15 +46,6 @@ const Inventory = () => {
         setCurrentProducts(categories[cat] || []);
     };
 
-    const stats = [
-        { name: "Total Items", count: categories.all.length, icon: Package },
-        { name: "Cakes & Pies", count: categories.cake.length, icon: Cake },
-        { name: "Ice Creams", count: categories.icecream.length, icon: IceCream },
-        { name: "Breads & Bakes", count: categories.bakery.length, icon: Croissant },
-        { name: "Beverages", count: categories.beverage.length, icon: Coffee },
-    ];
-
-    // प्रीमियम शिमर लोडिंग इफेक्ट के लिए मोशन वेरिएंट्स
     const shimmerVariants = {
         animate: {
             backgroundPosition: ["200% 0", "-200% 0"],
@@ -74,34 +57,36 @@ const Inventory = () => {
         },
     };
 
+    const handleDelete = async (id) => {
+        try {
+            const res = await fetch("/api/products", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id })
+            });
+            if (res.ok) {
+                setProductsData(prev => prev.filter(item => item.id !== id));
+                setCurrentProducts(prev => prev.filter(item => item.id !== id));
+            }
+        } catch (error) {
+            console.error("Delete failed:", error);
+        }
+    };
+
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#FFFBFD] p-6 pt-28">
-                <div className="max-w-7xl mx-auto space-y-8">
-                    {/* Header Skeleton */}
+            <div className="min-h-screen bg-[#FFFBFD] p-4 md:p-6 pt-20 md:pt-28">
+                <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
                     <motion.div
                         variants={shimmerVariants}
                         animate="animate"
-                        className="h-20 rounded-3xl border border-pink-100/50"
+                        className="h-16 rounded-2xl border border-pink-100/50"
                         style={{ background: "linear-gradient(90deg, #fff 25%, #FFF0F6 50%, #fff 75%)", backgroundSize: "200% 100%" }}
                     />
-                    {/* Stats Skeleton */}
-                    <motion.div
-                        variants={shimmerVariants}
-                        animate="animate"
-                        className="h-24 rounded-3xl border border-pink-100/50"
-                        style={{ background: "linear-gradient(90deg, #fff 25%, #FFF0F6 50%, #fff 75%)", backgroundSize: "200% 100%" }}
-                    />
-                    {/* Cards Skeleton Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                            <motion.div
-                                key={i}
-                                variants={shimmerVariants}
-                                animate="animate"
-                                className="h-80 rounded-[28px] border border-pink-50"
-                                style={{ background: "linear-gradient(90deg, #fff 25%, #FFF0F6 50%, #fff 75%)", backgroundSize: "200% 100%" }}
-                            />
+                    <div className="h-14 bg-white rounded-2xl border border-pink-100/40 animate-pulse" />
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        {[1, 2, 3, 4].map((i) => (
+                            <div key={i} className="h-72 md:h-80 rounded-3xl bg-pink-50/30 animate-pulse border border-pink-50" />
                         ))}
                     </div>
                 </div>
@@ -109,113 +94,73 @@ const Inventory = () => {
         );
     }
 
-    const handleDelete = async (id) => {
-        const res = await fetch("/api/products", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id })
-        })
-
-        const data = await res.json();
-        console.log(data);
-        setProductsData(prev => prev.filter(item => item.id !== id));
-        setCurrentProducts(prev => prev.filter(item => item.id !== id));
-    }
-
-
     return (
-        <div className="min-h-screen bg-[#FFFBFD] p-4 md:p-8 pt-28 mt-10 text-[#33081B]">
-            <div className="max-w-7xl mx-auto space-y-8">
+        <div className="min-h-screen bg-[#FFFBFD] p-3 sm:p-6 md:p-8 pt-16 md:pt-24 text-[#33081B] overflow-x-hidden">
+            <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
 
-                {/* Header Section
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-pink-100/60 shadow-sm">
+                {/* Top Action Header Section */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl md:rounded-3xl border border-pink-100/60 shadow-sm">
                     <div>
-                        <span className="text-pink-500 text-[10px] font-black tracking-[0.3em] uppercase block mb-1">
+                        <span className="text-pink-500 text-[9px] sm:text-[10px] font-black tracking-[0.3em] uppercase block mb-0.5">
                             Lotus Repository
                         </span>
-                        <h1 className="text-3xl font-black text-[#5D1232] tracking-tight">
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-[#5D1232] tracking-tight">
                             Products Inventory
                         </h1>
                     </div>
-
-
-                </div> */}
-
-                {/* Stats Row Widget */}
-                <div className="bg-white border border-pink-100/70 rounded-3xl p-2 shadow-sm grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 divide-x-0 divide-y-0 lg:divide-x divide-pink-100/60">
-                    {stats.map((item, i) => (
-                        <div
-                            key={i}
-                            className="flex items-center gap-4 py-4 px-5 justify-start sm:justify-center lg:justify-start"
-                        >
-                            <div className="p-3 bg-pink-50/60 rounded-2xl text-[#5D1232] border border-pink-100/40 shrink-0">
-                                <item.icon size={20} />
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-2xl font-black text-[#5D1232] leading-none tracking-tight mb-1">
-                                    {item.count}
-                                </p>
-                                <p className="text-[10px] uppercase font-black text-pink-400 tracking-wider truncate">
-                                    {item.name}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
+                    <button 
+                        onClick={() => router.push("/admin/addproduct")} 
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-[#5D1232] hover:bg-[#420B22] text-white rounded-xl sm:rounded-2xl font-bold shadow-md shadow-maroon-900/10 transition-all active:scale-95 text-sm"
+                    >
+                        <Plus size={16} />
+                        <span>Add New Product</span>
+                    </button>
                 </div>
 
-                {/* Categories Navigation Filter */}
-                <div className="flex justify-start md:justify-center overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 md:mx-0 md:px-0">
-                    <div className="bg-pink-100/40 p-1.5 rounded-2xl flex gap-1.5 shrink-0 border border-pink-100/30 backdrop-blur-sm relative">
+                {/* Categories Navigation Filter with Integrated Red Count Badges */}
+                <div className="bg-white p-3 rounded-2xl border border-pink-100/60 shadow-sm">
+                    <div className="flex flex-wrap gap-2 justify-start sm:justify-center">
                         {Object.keys(categories).map((cat) => {
-
+                            const count = categories[cat].length;
+                            const isActive = activeFilter === cat;
+                            
                             return (
-                                <>
-                                    <button
-                                        key={cat}
-                                        onClick={() => filterProducts(cat)}
-                                        className={`px-5 py-2 rounded-xl font-bold capitalize transition-all text-xs tracking-wide relative z-10 ${activeFilter === cat ? "text-[#5D1232] font-black" : "text-pink-500/80 hover:text-[#5D1232]"
-                                            }`}
-                                    >
-                                        {/* Framer Motion Sliding Background Effect */}
-                                        {activeFilter === cat && (
-                                            <motion.div
-                                                layoutId="activeFilterBg"
-                                                className="absolute inset-0 bg-white rounded-xl shadow-sm -z-10"
-                                                transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                                            />
-                                        )}
-                                        {cat === "all" ? (
-                                            <span className="flex items-center gap-1.5">
-                                                <Layers size={13} />
-                                                All Products
-                                            </span>
-                                        ) : (
-                                            cat
-                                        )}
-                                    </button>
+                                <button
+                                    key={cat}
+                                    onClick={() => filterProducts(cat)}
+                                    className={`px-4 py-2.5 rounded-xl font-bold capitalize transition-all text-xs tracking-wide relative z-10 flex items-center justify-center gap-2 flex-1 sm:flex-none text-center min-w-[85px] sm:min-w-0 ${
+                                        isActive ? "text-[#5D1232] font-black" : "text-pink-500/80 hover:text-[#5D1232]"
+                                    }`}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeFilterBg"
+                                            className="absolute inset-0 bg-pink-50 rounded-xl -z-10 border border-pink-100/50"
+                                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                        />
+                                    )}
+                                    
+                                    <span className="flex items-center gap-1">
+                                        {cat === "all" && <Layers size={12} />}
+                                        {cat}
+                                    </span>
 
-                                </>
-
-                            )
-
-
-
+                                    {/* Red/Maroon Count Badge */}
+                                    <span className={`inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-black rounded-md transition-all ${
+                                        isActive 
+                                            ? "bg-[#5D1232] text-white" 
+                                            : "bg-red-50 text-red-600 border border-red-100"
+                                    }`}>
+                                        {count}
+                                    </span>
+                                </button>
+                            );
                         })}
-
-                        <div>
-
-                            <button onClick={() => router.push("/admin/addproduct")} className=" ml-20 w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 bg-[#5D1232] hover:bg-[#420B22] text-white rounded-2xl font-bold shadow-md shadow-maroon-900/10 transition-all active:scale-95">
-                                <Plus size={18} />
-                                <span>Add New Product</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
 
                 {/* Live Inventory Feed */}
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                     <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-[#5D1232]" />
                         <h2 className="text-xs font-black text-[#5D1232] uppercase tracking-wider">
@@ -223,7 +168,8 @@ const Inventory = () => {
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {/* Responsive Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
                         <AnimatePresence mode="popLayout">
                             {currentProducts.map((item, index) => (
                                 <motion.div
@@ -232,13 +178,13 @@ const Inventory = () => {
                                     initial={{ opacity: 0, y: 15 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ type: "spring", stiffness: 500, damping: 35, delay: index * 0.01 }}
-                                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                                    className="group bg-white rounded-[28px] p-4 border border-pink-100/70 shadow-sm hover:shadow-xl hover:border-pink-200/80 transition-all duration-300 flex flex-col justify-between"
+                                    transition={{ type: "spring", stiffness: 500, damping: 35, delay: Math.min(index * 0.01, 0.2) }}
+                                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                                    className="group bg-white rounded-2xl sm:rounded-[28px] p-3 sm:p-4 border border-pink-100/70 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
                                 >
                                     <div>
                                         {/* Image Area with Badge */}
-                                        <div className="relative aspect-square w-full rounded-2xl overflow-hidden mb-4 bg-pink-50/30 border border-pink-50">
+                                        <div className="relative aspect-square w-full rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-4 bg-pink-50/30 border border-pink-50">
                                             <img
                                                 src={item.image || "/api/placeholder/260/260"}
                                                 alt={item.name}
@@ -246,43 +192,46 @@ const Inventory = () => {
                                                 loading="lazy"
                                             />
 
-                                            <div className="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-md px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm border border-pink-50">
-                                                <Star size={11} className="fill-pink-500 text-pink-500" />
-                                                <span className="text-[11px] font-black text-[#5D1232]">
+                                            <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-md px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg sm:rounded-xl flex items-center gap-0.5 sm:gap-1 shadow-sm border border-pink-50">
+                                                <Star size={10} className="fill-pink-500 text-pink-500" />
+                                                <span className="text-[10px] sm:text-[11px] font-black text-[#5D1232]">
                                                     {item.rating || "4.5"}
                                                 </span>
                                             </div>
 
                                             {item.price > 500 && (
-                                                <div className="absolute bottom-2.5 left-2.5 bg-[#5D1232] text-white px-2 py-0.5 rounded-lg flex items-center gap-1 text-[9px] font-black uppercase tracking-wider">
-                                                    <Sparkles size={10} className="text-pink-300" />
+                                                <div className="absolute bottom-2 left-2 bg-[#5D1232] text-white px-1.5 py-0.5 rounded-md flex items-center gap-1 text-[8px] sm:text-[9px] font-black uppercase tracking-wider">
+                                                    <Sparkles size={9} className="text-pink-300" />
                                                     Signature
                                                 </div>
                                             )}
                                         </div>
 
                                         {/* Metadata Content */}
-                                        <div className="space-y-1 px-1">
-                                            <span className="text-[9px] uppercase font-black tracking-widest text-pink-400 block">
+                                        <div className="space-y-0.5 sm:space-y-1 px-0.5">
+                                            <span className="text-[8px] sm:text-[9px] uppercase font-black tracking-widest text-pink-400 block">
                                                 {item.category}
                                             </span>
-                                            <h3 className="font-black text-[#5D1232] text-base leading-tight tracking-tight line-clamp-2 h-10">
+                                            <h3 className="font-black text-[#5D1232] text-xs sm:text-sm md:text-base leading-tight tracking-tight line-clamp-2 h-8 sm:h-10">
                                                 {item.name}
                                             </h3>
                                         </div>
                                     </div>
 
                                     {/* Pricing and Interactions */}
-                                    <div className="mt-4 pt-3 border-t border-pink-50/60 flex items-center justify-between px-1">
+                                    <div className="mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-pink-50/60 flex items-center justify-between px-0.5">
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] font-bold text-pink-400 uppercase tracking-wider leading-none mb-0.5">Price</span>
-                                            <span className="text-lg font-black text-[#5D1232] tracking-tight">
+                                            <span className="text-[8px] sm:text-[9px] font-bold text-pink-400 uppercase tracking-wider leading-none mb-0.5">Price</span>
+                                            <span className="text-sm sm:text-base md:text-lg font-black text-[#5D1232] tracking-tight">
                                                 ₹{item.price}
                                             </span>
                                         </div>
 
-                                        <button onClick={() => handleDelete(item.id)} className="p-2.5 bg-pink-50 group-hover:bg-[#5D1232] text-[#5D1232] group-hover:text-white rounded-xl transition-all duration-300 active:scale-90 border border-pink-100/40 group-hover:border-transparent shadow-sm">
-                                            <DeleteIcon size={15} className="transition-transform group-hover:rotate-6" />
+                                        <button 
+                                            onClick={() => handleDelete(item.id)} 
+                                            className="p-2 bg-pink-50 hover:bg-[#5D1232] text-[#5D1232] hover:text-white rounded-lg sm:rounded-xl transition-all duration-300 active:scale-90 border border-pink-100/40 hover:border-transparent shadow-sm"
+                                        >
+                                            <Trash2 size={14} />
                                         </button>
                                     </div>
                                 </motion.div>
