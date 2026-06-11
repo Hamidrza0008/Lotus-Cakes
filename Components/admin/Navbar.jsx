@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
@@ -84,17 +85,54 @@ const AdminNavbar = () => {
             }}
             className="flex items-center gap-3 cursor-pointer select-none group"
           >
-            <div className="w-10 h-10 bg-[#5D1232] rounded-xl flex items-center justify-center text-white font-black text-lg transition-transform group-hover:scale-105 shadow-sm">
-              L
+            {/* Brand Logo */}
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
+            <div className="relative">
+              {/* SVG Lotus Logo */}
+              <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center group-hover:rotate-[10deg] transition-transform duration-500">
+                <svg
+                  viewBox="0 0 100 100"
+                  className="w-full h-full fill-none stroke-[#5D1232] sm:stroke-pink-500"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  {/* Left Laurel Wreath / Leaves from image_1295b6.png */}
+                  <path d="M 22,70 C 12,60 10,40 18,22 C 16,35 18,50 28,60" stroke="#5D1232" strokeWidth="2.5" />
+                  <path d="M 14,48 Q 8,42 12,35" stroke="#5D1232" strokeWidth="2" />
+                  <path d="M 15,35 Q 10,28 16,22" stroke="#5D1232" strokeWidth="2" />
+
+                  {/* Right Laurel Wreath / Leaves from image_1295b6.png */}
+                  <path d="M 78,70 C 88,60 90,40 82,22 C 84,35 82,50 72,60" stroke="#5D1232" strokeWidth="2.5" />
+                  <path d="M 86,48 Q 92,42 88,35" stroke="#5D1232" strokeWidth="2" />
+                  <path d="M 85,35 Q 90,28 84,22" stroke="#5D1232" strokeWidth="2" />
+
+                  {/* Center Main Lotus Petal */}
+                  <path
+                    d="M 50,25 C 62,45 65,70 50,80 C 35,70 38,45 50,25 Z"
+                    className="fill-pink-500/10 stroke-[#5D1232]"
+                    strokeWidth="4"
+                  />
+
+                  {/* Left Side Petals */}
+                  <path d="M 50,45 C 32,50 26,68 44,78" className="stroke-[#5D1232]" />
+                  <path d="M 50,58 C 22,62 28,76 48,79" className="stroke-[#5D1232]" />
+
+                  {/* Right Side Petals */}
+                  <path d="M 50,45 C 68,50 74,68 56,78" className="stroke-[#5D1232]" />
+                  <path d="M 50,58 C 78,62 72,76 32,79" className="stroke-[#5D1232]" />
+
+                  {/* Base Bottom Curve */}
+                  <path d="M 35,80 Q 50,86 65,80" stroke="#5D1232" strokeWidth="4" />
+                </svg>
+              </div>
+              <div className="absolute -inset-1 bg-pink-400/20 blur-lg rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
-            <div>
-              <h1 className="text-lg font-black text-[#5D1232] tracking-tight leading-none mb-0.5">
-                LOTUS
-              </h1>
-              <p className="text-[10px] text-pink-500 uppercase tracking-widest font-black">
-                Admin Panel
-              </p>
-            </div>
+            <span className="font-serif text-xl font-black tracking-tighter text-[#5D1232]">
+              LOTUS
+            </span>
+          </Link>
+            
           </div>
 
           {/* Desktop Navigation Links (Visible on Large Screens) */}
