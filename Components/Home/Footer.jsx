@@ -56,8 +56,10 @@ const Footer = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 pt-4 md:pt-0 w-full text-center sm:text-left">
             <div className="space-y-2 md:space-y-3">
               <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-pink-400">Location</h4>
-              <p className="text-xs md:text-sm text-pink-100/70 font-medium leading-relaxed">
-                Siddhivinayak Heights,<br />Navi Mumbai, 410206
+              <p className="text-xs md:text-sm text-pink-100/70 font-medium leading-relaxed max-w-[260px] mx-auto sm:mx-0">
+                Shop No 05, Kalpavruksh Heights,<br />
+                New Link Rd, Kandivali West,<br />
+                Mumbai, Maharashtra 400067
               </p>
             </div>
             <div className="space-y-2 md:space-y-3">
@@ -71,7 +73,6 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar - Perfectly aligned for any device size */}
-        {/* Bottom Bar */}
         <div className="pt-6 md:pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 relative z-10">
           <p className="text-[9px] uppercase tracking-[0.3em] sm:tracking-[0.4em] text-white/40 font-bold text-center">
             © 2026 Lotus Cake & Bakers

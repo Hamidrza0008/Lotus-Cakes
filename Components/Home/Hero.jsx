@@ -27,7 +27,7 @@ const Hero = () => {
         >
           <div className="space-y-3 md:space-y-4">
             <span className="text-pink-500 font-black tracking-[0.3em] md:tracking-[0.4em] text-[9px] md:text-[10px] uppercase bg-white px-3 py-1 rounded-full shadow-sm inline-block">
-              Artisanal Bakery since 2024
+              Artisanal Bakery since 2025
             </span>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold text-[#5D1232] leading-tight">
               Where Dreams <br />

@@ -66,7 +66,8 @@ const Specialities = () => {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-stretch">
+                {/* items-stretch ensure cards are equal height, but we use h-full inside */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
                     {services.map((item, index) => (
                         <motion.div
                             key={index}
@@ -74,10 +75,10 @@ const Specialities = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.15 }}
                             whileHover={{ y: -8 }}
-                            className="bg-white/80 backdrop-blur-xl border border-pink-100 rounded-[32px] p-6 relative flex flex-col justify-between min-h-[380px] md:h-[45vh] shadow-[0_15px_40px_rgba(93,18,50,0.04)] hover:shadow-[0_25px_50px_rgba(255,145,175,0.18)] hover:border-pink-200/80 transition-all duration-500 group"
+                            className="bg-white/80 backdrop-blur-xl border border-pink-100 rounded-[32px] p-6 relative flex flex-col justify-between h-full md:min-h-[400px] shadow-[0_15px_40px_rgba(93,18,50,0.04)] hover:shadow-[0_25px_50px_rgba(255,145,175,0.18)] hover:border-pink-200/80 transition-all duration-500 group"
                         >
-                            <div>
-                                <div className="flex justify-between items-start mb-6">
+                            <div className="flex flex-col gap-4">
+                                <div className="flex justify-between items-start">
                                     <div className="w-14 h-14 bg-[#FFF0F3] rounded-2xl flex items-center justify-center border border-pink-100/50 shadow-inner transition-transform duration-500 group-hover:rotate-6">
                                         {item.icon}
                                     </div>
@@ -86,13 +87,14 @@ const Specialities = () => {
                                     </span>
                                 </div>
 
-                                <h3 className="text-lg md:text-xl font-bold text-[#5D1232] tracking-tight group-hover:text-pink-600 transition-colors duration-300">
-                                    {item.title}
-                                </h3>
-
-                                <p className="text-xs font-medium text-pink-900/60 mt-3 leading-relaxed md:line-clamp-3">
-                                    {item.description}
-                                </p>
+                                <div className="space-y-2">
+                                    <h3 className="text-lg md:text-xl font-bold text-[#5D1232] tracking-tight group-hover:text-pink-600 transition-colors duration-300">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-xs font-medium text-pink-900/60 leading-relaxed md:line-clamp-3">
+                                        {item.description}
+                                    </p>
+                                </div>
                             </div>
 
                             <div className="pt-4 mt-6 border-t border-pink-100/60 flex items-center justify-between">
@@ -122,7 +124,7 @@ const Specialities = () => {
                         <CalendarDays size={16} className="text-pink-500" />
                         <span>Want a customized plan?</span>
                     </div>
-                    <button onClick={handleContact} className="text-pink-500 underline underline-offset-4 hover:text-[#5D1232] transition-colors native-3xl">
+                    <button onClick={handleContact} className="text-pink-500 underline underline-offset-4 hover:text-[#5D1232] transition-colors">
                         Contact Coordinator
                     </button>
                 </motion.div>
